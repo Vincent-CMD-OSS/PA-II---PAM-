@@ -1,370 +1,3 @@
-// import 'package:flutter/material.dart';
-// import 'package:geolocator/geolocator.dart';
-// import 'package:url_launcher/url_launcher.dart'; // Package bawaan Flutter untuk buka link/maps
-// // import 'package:ta_pa2_pa3_project/features/ibu/hamil/data/services/google_places_service.dart';
-// import 'package:ta_pa2_pa3_project/features/ibu/hamil/data/services/faskes_service.dart';
-
-// class EmergencyFaskesScreen extends StatefulWidget {
-//   const EmergencyFaskesScreen({super.key});
-
-//   @override
-//   State<EmergencyFaskesScreen> createState() => _EmergencyFaskesScreenState();
-// }
-
-// class _EmergencyFaskesScreenState extends State<EmergencyFaskesScreen> {
-//   // final GooglePlacesService _placesService = GooglePlacesService();
-//   final FaskesService _placesService = FaskesService();
-
-//   // State UI
-//   bool _isLoadingGps = true;
-//   bool _isLoadingFaskes = false;
-//   List<FaskesModel> _faskesList = [];
-//   String? _errorMessage;
-  
-//   // Data Lokasi
-//   double? _userLat;
-//   double? _userLng;
-//   bool _isUsingFallback = false;
-
-//   // ✅ FALLBACK LOGIC: Koordinat Puskesmas Balige (Ganti dengan daerah kalian)
-//   final double _fallbackLat = 2.2833;
-//   final double _fallbackLng = 98.8500;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _initLocationAndFetch();
-//   }
-
-//   /// Alur Utama: Ambil Lokasi -> Cek Gagal -> Fetch Data
-//   Future<void> _initLocationAndFetch() async {
-//     setState(() {
-//       _isLoadingGps = true;
-//       _errorMessage = null;
-//     });
-
-//     try {
-//       // 1. Cek permission dulu
-//       LocationPermission permission = await Geolocator.checkPermission();
-//       if (permission == LocationPermission.denied) {
-//         permission = await Geolocator.requestPermission();
-//       }
-
-//       if (permission == LocationPermission.deniedForever || permission == LocationPermission.denied) {
-//         throw Exception('Izin lokasi ditolak.');
-//       }
-
-//       // 2. Coba ambil posisi asli
-//       final position = await Geolocator.getCurrentPosition(
-//         desiredAccuracy: LocationAccuracy.medium,
-//       );
-
-//       _userLat = position.latitude;
-//       _userLng = position.longitude;
-//       _isUsingFallback = false;
-
-//     } catch (e) {
-//       // 3. FALLBACK: Jika gagal (Karena Web/Laptop/Permission)
-//       if (!mounted) return;
-      
-//       setState(() {
-//         _userLat = _fallbackLat;
-//         _userLng = _fallbackLng;
-//         _isUsingFallback = true;
-//       });
-
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         const SnackBar(
-//           content: Text('GPS tidak tersedia. Menggunakan lokasi simulasi (Balige).'),
-//           backgroundColor: Colors.orange,
-//         ),
-//       );
-//     } finally {
-//       if (!mounted) return;
-//       setState(() => _isLoadingGps = false);
-      
-//       // 4. Lanjut fetch data faskes (baik dari GPS asli maupun fallback)
-//       _fetchFaskes(radiusMeter: 5000);
-//     }
-//   }
-
-//   Future<void> _fetchFaskes() async {
-//     if (_userLat == null || _userLng == null) return;
-
-//     setState(() => _isLoadingFaskes = true);
-
-//     try {
-//       final results = await _placesService.fetchNearbyHospitals(
-//         lat: _userLat!,
-//         lng: _userLng!,
-//         radiusMeter: radiusMeter,
-//       );
-//       if (!mounted) return;
-//       setState(() {
-//         _faskesList = results;
-//         _isLoadingFaskes = false;
-//       });
-//     } catch (e) {
-//       if (!mounted) return;
-//       setState(() {
-//         _errorMessage = e.toString().replaceFirst('Exception: ', '');
-//         _isLoadingFaskes = false;
-//       });
-//     }
-//   }
-
-//   /// Helper: Format jarak (meter -> km)
-//   String _formatJarak(double meter) {
-//     if (meter >= 1000) {
-//       return '${(meter / 1000).toStringAsFixed(1)} Km';
-//     }
-//     return '${meter.toInt()} m';
-//   }
-
-//   /// Aksi: Buka Google Maps untuk navigasi
-//   Future<void> _openMapsNavigation(FaskesModel faskes) async {
-//     // Skema URL Google Maps untuk navigasi langsung
-//     final url = 'https://www.google.com/maps/dir/?api=1&destination=${faskes.lat},${faskes.lng}';
-    
-//     if (await canLaunchUrl(Uri.parse(url))) {
-//       await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
-//     } else {
-//       if (!mounted) return;
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         const SnackBar(content: Text('Tidak bisa membuka Google Maps')),
-//       );
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: const Color(0xFFFFEBEE), // Background merah muda darurat
-//       appBar: AppBar(
-//         title: const Text('Faskes Terdekat (Darurat)'),
-//         backgroundColor: Colors.red.shade700,
-//         foregroundColor: Colors.white,
-//         elevation: 0,
-//       ),
-//       body: _buildBody(),
-//     );
-//   }
-
-//   Widget _buildBody() {
-//     // State 1: Loading GPS
-//     if (_isLoadingGps) {
-//       return _centerMessage(
-//         icon: Icons.gps_fixed,
-//         text: 'Mencari lokasi Bunda...',
-//         isLoading: true,
-//       );
-//     }
-
-//     // State 2: Loading Fetch API
-//     if (_isLoadingFaskes) {
-//       return _centerMessage(
-//         icon: Icons.local_hospital,
-//         text: 'Mencari Rumah Sakit terdekat...',
-//         isLoading: true,
-//       );
-//     }
-
-//     // State 3: Error
-//     if (_errorMessage != null) {
-//       return _centerMessage(
-//         icon: Icons.error_outline,
-//         text: _errorMessage!,
-//         isError: true,
-//       );
-//     }
-
-//     // State 4: Berhasil, tapi kosong
-//     if (_faskesList.isEmpty) {
-//       return _centerMessage(
-//         icon: Icons.search_off,
-//         text: 'Tidak ada Rumah Sakit dalam radius 5 Km.',
-//       );
-//     }
-
-//     // State 5: Berhasil, ada data
-//     return ListView(
-//       padding: const EdgeInsets.all(16),
-//       children: [
-//         // Info Lokasi
-//         _buildLocationInfoCard(),
-//         const SizedBox(height: 16),
-        
-//         // List Faskes
-//         ..._faskesList.map((faskes) => _buildFaskesCard(faskes)).toList(),
-//       ],
-//     );
-//   }
-
-//   Widget _buildLocationInfoCard() {
-//     return Container(
-//       padding: const EdgeInsets.all(14),
-//       decoration: BoxDecoration(
-//         color: Colors.white,
-//         borderRadius: BorderRadius.circular(12),
-//         border: Border.all(color: Colors.red.shade100),
-//       ),
-//       child: Row(
-//         children: [
-//           const Icon(Icons.my_location, color: Colors.blue, size: 20),
-//           const SizedBox(width: 10),
-//           Expanded(
-//             child: Column(
-//               crossAxisAlignment: CrossAxisAlignment.start,
-//               children: [
-//                 Text(
-//                   _isUsingFallback ? 'Lokasi Simulasi' : 'Lokasi Anda',
-//                   style: TextStyle(
-//                     fontSize: 12,
-//                     fontWeight: FontWeight.bold,
-//                     color: _isUsingFallback ? Colors.orange : Colors.black87,
-//                   ),
-//                 ),
-//                 Text(
-//                   '${_userLat?.toStringAsFixed(4)}, ${_userLng?.toStringAsFixed(4)}',
-//                   style: const TextStyle(fontSize: 11, color: Colors.black54),
-//                 ),
-//               ],
-//             ),
-//           ),
-//           if (_isUsingFallback)
-//             const Icon(Icons.warning_amber_rounded, color: Colors.orange, size: 20)
-//           else
-//             const Icon(Icons.check_circle, color: Colors.green, size: 20),
-//         ],
-//       ),
-//     );
-//   }
-
-//   Widget _buildFaskesCard(FaskesModel faskes) {
-//     return Container(
-//       margin: const EdgeInsets.only(bottom: 12),
-//       padding: const EdgeInsets.all(16),
-//       decoration: BoxDecoration(
-//         color: Colors.white,
-//         borderRadius: BorderRadius.circular(16),
-//         boxShadow: [
-//           BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 8, offset: const Offset(0, 3))
-//         ],
-//       ),
-//       child: Column(
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: [
-//           Row(
-//             children: [
-//               const Icon(Icons.local_hospital, color: Colors.red, size: 24),
-//               const SizedBox(width: 12),
-//               Expanded(
-//                 child: Text(
-//                   faskes.nama,
-//                   style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF1C2B4A)),
-//                   maxLines: 1,
-//                   overflow: TextOverflow.ellipsis,
-//                 ),
-//               ),
-//             ],
-//           ),
-//           const SizedBox(height: 8),
-//           Row(
-//             children: [
-//               const Icon(Icons.location_on_outlined, size: 16, color: Colors.grey),
-//               const SizedBox(width: 4),
-//               Expanded(
-//                 child: Text(
-//                   faskes.alamat,
-//                   style: const TextStyle(fontSize: 13, color: Colors.black54),
-//                   maxLines: 2,
-//                   overflow: TextOverflow.ellipsis,
-//                 ),
-//               ),
-//             ],
-//           ),
-//           const SizedBox(height: 12),
-//           Row(
-//             children: [
-//               // Badge Status Buka/Tutup
-//               Container(
-//                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-//                 decoration: BoxDecoration(
-//                   color: faskes.isOpen ? const Color(0xFFE8F5E9) : const Color(0xFFFFEBEE),
-//                   borderRadius: BorderRadius.circular(20),
-//                 ),
-//                 child: Row(
-//                   mainAxisSize: MainAxisSize.min,
-//                   children: [
-//                     Icon(faskes.isOpen ? Icons.check_circle : Icons.cancel, size: 14, color: faskes.isOpen ? Colors.green : Colors.red),
-//                     const SizedBox(width: 4),
-//                     Text(
-//                       faskes.isOpen ? 'Buka' : 'Tutup',
-//                       style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: faskes.isOpen ? Colors.green : Colors.red),
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//               const SizedBox(width: 12),
-//               // Badge Jarak
-//               Container(
-//                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-//                 decoration: BoxDecoration(
-//                   color: const Color(0xFFE3F2FD),
-//                   borderRadius: BorderRadius.circular(20),
-//                 ),
-//                 child: Row(
-//                   mainAxisSize: MainAxisSize.min,
-//                   children: [
-//                     const Icon(Icons.straighten, size: 14, color: Colors.blue),
-//                     const SizedBox(width: 4),
-//                     Text(
-//                       _formatJarak(faskes.jarakMeter),
-//                       style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.blue),
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//               const Spacer(),
-//               // Tombol Navigasi
-//               ElevatedButton.icon(
-//                 onPressed: () => _openMapsNavigation(faskes),
-//                 icon: const Icon(Icons.navigation, size: 18),
-//                 label: const Text('Navigasi', style: TextStyle(fontSize: 12)),
-//                 style: ElevatedButton.styleFrom(
-//                   backgroundColor: Colors.red.shade700,
-//                   foregroundColor: Colors.white,
-//                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-//                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-
-//   Widget _centerMessage({required IconData icon, required String text, bool isLoading = false, bool isError = false}) {
-//     return Center(
-//       child: Padding(
-//         padding: const EdgeInsets.all(32),
-//         child: Column(
-//           mainAxisSize: MainAxisSize.min,
-//           children: [
-//             if (isLoading)
-//               const CircularProgressIndicator(color: Colors.red)
-//             else
-//               Icon(icon, size: 50, color: isError ? Colors.red.shade300 : Colors.grey),
-//             const SizedBox(height: 16),
-//             Text(text, textAlign: TextAlign.center, style: TextStyle(fontSize: 15, color: isError ? Colors.red.shade700 : Colors.black54)),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -390,9 +23,8 @@ class _EmergencyFaskesScreenState extends State<EmergencyFaskesScreen> {
   double? _userLat;
   double? _userLng;
   bool _isUsingFallback = false;
-  double _currentRadiusKm = 5; // 🆕 Untuk ditampilkan di UI agar terbukti dinamis
+  double _currentRadiusKm = 5; 
 
-  // ✅ FALLBACK LOGIC: GANTI KE JAKARTA DULU UNTUK BUKTIKAN!
   final double _fallbackLat = -6.1753;
   final double _fallbackLng = 106.8271;
 
@@ -445,25 +77,23 @@ class _EmergencyFaskesScreenState extends State<EmergencyFaskesScreen> {
       if (!mounted) return;
       setState(() => _isLoadingGps = false);
       
-      // ✅ TEST DENGAN RADIUS 50 KM DULU!
       _fetchFaskes(radiusMeter: 50000); 
     }
   }
 
-  // ✅ FIX: TAMBAHKAN PARAMETER INI
   Future<void> _fetchFaskes({double radiusMeter = 5000}) async {
     if (_userLat == null || _userLng == null) return;
 
     setState(() {
       _isLoadingFaskes = true;
-      _currentRadiusKm = radiusMeter / 1000; // Update UI info
+      _currentRadiusKm = radiusMeter / 1000; 
     });
 
     try {
       final results = await _placesService.fetchNearbyHospitals(
         lat: _userLat!,
         lng: _userLng!,
-        radiusMeter: radiusMeter, // ✅ Pakai yang dari parameter
+        radiusMeter: radiusMeter, 
       );
       if (!mounted) return;
       setState(() {
@@ -526,7 +156,6 @@ class _EmergencyFaskesScreenState extends State<EmergencyFaskesScreen> {
       return _centerMessage(icon: Icons.error_outline, text: _errorMessage!, isError: true);
     }
 
-    // ✅ TEKS DINAMIS: AKAN OTOMATIS BERUBAH SESUAI RADIUS
     if (_faskesList.isEmpty) {
       return _centerMessage(
         icon: Icons.search_off,
@@ -539,7 +168,6 @@ class _EmergencyFaskesScreenState extends State<EmergencyFaskesScreen> {
       children: [
         _buildLocationInfoCard(),
         const SizedBox(height: 16),
-        // 🆕 Menampilkan total RS yang ditemukan sebagai bukti
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),
@@ -592,7 +220,7 @@ class _EmergencyFaskesScreenState extends State<EmergencyFaskesScreen> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8, offset: const Offset(0, 3)) // ✅ Fix warning withOpacity
+          BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8, offset: const Offset(0, 3)) 
         ],
       ),
       child: Column(

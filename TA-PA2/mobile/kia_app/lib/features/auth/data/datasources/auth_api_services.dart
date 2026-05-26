@@ -1,7 +1,5 @@
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
-
 import 'package:ta_pa2_pa3_project/core/constants/api_constants.dart';
 import 'package:ta_pa2_pa3_project/core/services/auth_session.dart';
 
@@ -37,10 +35,16 @@ class AuthApiService {
       throw Exception('Token tidak ditemukan di response login.');
     }
 
+    // 🆕 Ambil data waktu kadaluarsa dari backend
+    final expiresIn = data['expires_in'] != null 
+        ? int.tryParse(data['expires_in'].toString()) 
+        : null;
+
     await AuthSession.save(
       accessToken: token,
       name: data['name']?.toString(),
       userRole: data['role']?.toString(),
+      expiresIn: expiresIn, // 🆕 Kirim ke session
     );
   }
 
