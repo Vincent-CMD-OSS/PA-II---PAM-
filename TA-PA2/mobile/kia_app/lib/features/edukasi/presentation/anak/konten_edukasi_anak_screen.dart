@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ta_pa2_pa3_project/core/constants/app_colors.dart';
+import 'package:ta_pa2_pa3_project/core/themes/app_colors.dart';
 
 import 'pedoman/pedoman_0_6_bulan_screen.dart';
 import 'pedoman/pedoman_6_12_bulan_screen.dart';

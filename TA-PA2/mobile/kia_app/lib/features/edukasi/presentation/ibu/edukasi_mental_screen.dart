@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../data/models/edukasi_mental_model.dart';
 import '../../data/repositories/edukasi_mental_repository.dart';
 import '../../data/services/edukasi_mental_service.dart';
+import 'package:ta_pa2_pa3_project/core/constants/api_constants.dart';
 
 class EdukasiKesehatanMentalScreen extends StatefulWidget {
   const EdukasiKesehatanMentalScreen({
@@ -23,9 +24,7 @@ class _EdukasiKesehatanMentalScreenState
     super.initState();
 
     final repository = EdukasiKesehatanMentalRepository(
-      EdukasiKesehatanMentalService(
-        baseUrl: 'http://localhost:8080',
-      ),
+      EdukasiKesehatanMentalService(),
     );
 
     futureData = repository.getAllEdukasiKesehatanMental();

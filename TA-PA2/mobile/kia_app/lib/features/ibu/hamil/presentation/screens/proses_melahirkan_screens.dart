@@ -3,7 +3,7 @@ import 'package:ta_pa2_pa3_project/core/themes/app_theme.dart';
 import 'package:ta_pa2_pa3_project/features/ibu/hamil/data/models/proses_melahirkan_model.dart';
 import 'package:ta_pa2_pa3_project/features/ibu/hamil/data/repositories/proses_melahirkan_repository.dart';
 import 'package:ta_pa2_pa3_project/features/ibu/hamil/data/repositories/keterangan_lahir_repository.dart';
-import 'package:ta_pa2_pa3_project/core/constants/app_colors.dart';
+import 'package:ta_pa2_pa3_project/core/themes/app_colors.dart';
 
 // ─── Screen 1: Ringkasan Pelayanan ───────────────────────────────────────────
 

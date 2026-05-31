@@ -43,6 +43,44 @@ class KehamilanApiService {
     return KehamilanAktifModel.fromJson(data);
   }
 
+  Future<List<dynamic>> getRujukanByKehamilanId(
+      int kehamilanId,
+  ) async {
+
+    final token = AuthSession.token;
+
+    if (token == null || token.isEmpty) {
+      throw Exception('Token tidak ditemukan');
+    }
+
+    final uri = Uri.parse(
+      '${ApiConstants.baseUrl}'
+      '${ApiConstants.rujukanIbu}'
+      '?kehamilan_id=$kehamilanId',
+    );
+
+    final response = await http.get(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    final body = jsonDecode(response.body);
+
+    if (response.statusCode >= 200 &&
+        response.statusCode < 300) {
+
+      return body['data'] ?? [];
+    }
+
+    throw Exception(
+      body['message']?.toString() ??
+          'Gagal mengambil data rujukan',
+    );
+  }
+
   void dispose() {
     _client.close();
   }

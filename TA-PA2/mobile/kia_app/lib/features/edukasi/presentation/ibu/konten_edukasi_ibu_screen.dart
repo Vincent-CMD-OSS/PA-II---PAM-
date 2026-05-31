@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ta_pa2_pa3_project/core/constants/app_colors.dart';
+import 'package:ta_pa2_pa3_project/core/themes/app_colors.dart';
 
 // --- IMPORT NAVIGASI ---
 import 'package:ta_pa2_pa3_project/features/dashboard/presentation/screens/dashboard_screen.dart'; 
@@ -39,9 +39,7 @@ class _KontenEdukasiIbuScreenState extends State<KontenEdukasiIbuScreen> {
 
   // KONEKSI DATABASE ASLI (SAMA SEKALI TIDAK DIUBAH)
   final _trimesterRepository = EdukasiTrimesterRepository(
-    EdukasiTrimesterService(
-      baseUrl: 'http://localhost:8080',
-    ),
+    EdukasiTrimesterService(),
   );
 
   @override

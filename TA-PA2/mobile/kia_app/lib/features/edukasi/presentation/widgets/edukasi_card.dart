@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 // Sesuaikan path app_colors jika perlu
-import 'package:ta_pa2_pa3_project/core/constants/app_colors.dart';
+import 'package:ta_pa2_pa3_project/core/themes/app_colors.dart';
 
 class EdukasiCard extends StatelessWidget {
   final String title;

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../data/models/edukasi_asi_model.dart';
 import '../../data/repositories/edukasi_asi_repository.dart';
 import '../../data/services/edukasi_asi_service.dart';
+import 'package:ta_pa2_pa3_project/core/constants/api_constants.dart';
 
 class EdukasiASIScreen extends StatefulWidget {
   const EdukasiASIScreen({
@@ -21,9 +22,7 @@ class _EdukasiASIScreenState extends State<EdukasiASIScreen> {
     super.initState();
 
     final repository = EdukasiASIRepository(
-      EdukasiASIService(
-        baseUrl: 'http://localhost:8080',
-      ),
+      EdukasiASIService(),
     );
 
     futureData = repository.getAllEdukasiASI();

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:ta_pa2_pa3_project/core/constants/app_colors.dart';
+import 'package:ta_pa2_pa3_project/core/themes/app_colors.dart';
 
 import '../../data/models/edukasi_nifas_model.dart';
 import '../../data/repositories/edukasi_nifas_repository.dart';
 import '../../data/services/edukasi_nifas_service.dart';
+import 'package:ta_pa2_pa3_project/core/constants/api_constants.dart';
 
 class EdukasiNifasScreen extends StatefulWidget {
   const EdukasiNifasScreen({
@@ -22,9 +23,7 @@ class _EdukasiNifasScreenState extends State<EdukasiNifasScreen> {
     super.initState();
 
     final repository = EdukasiNifasRepository(
-      EdukasiNifasService(
-        baseUrl: 'http://localhost:8080',
-      ),
+      EdukasiNifasService(),
     );
 
     futureData = repository.getAllEdukasiNifas();

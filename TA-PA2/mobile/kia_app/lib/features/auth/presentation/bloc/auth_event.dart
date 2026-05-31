@@ -7,7 +7,9 @@ abstract class AuthEvent extends Equatable {
   List<Object?> get props => [];
 }
 
+// Login
 class AuthLoginRequested extends AuthEvent {
+
   final String identifier;
   final String password;
 
@@ -17,13 +19,18 @@ class AuthLoginRequested extends AuthEvent {
   });
 
   @override
-  List<Object?> get props => [identifier, password];
+  List<Object?> get props => [
+        identifier,
+        password,
+      ];
 }
 
+// Logout
 class AuthLogoutRequested extends AuthEvent {
   const AuthLogoutRequested();
 }
 
+// Check Session
 class AuthCheckRequested extends AuthEvent {
   const AuthCheckRequested();
 }

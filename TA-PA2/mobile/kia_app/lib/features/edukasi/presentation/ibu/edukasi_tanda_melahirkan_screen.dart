@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../data/models/edukasi_tanda_melahirkan_model.dart';
 import '../../data/repositories/edukasi_tanda_melahirkan_repository.dart';
 import '../../data/services/edukasi_tanda_melahirkan_service.dart';
+import 'package:ta_pa2_pa3_project/core/constants/api_constants.dart';
 
 class EdukasiTandaMelahirkanScreen extends StatefulWidget {
   const EdukasiTandaMelahirkanScreen({
@@ -23,9 +24,7 @@ class _EdukasiTandaMelahirkanScreenState
     super.initState();
 
     final repository = EdukasiTandaMelahirkanRepository(
-      EdukasiTandaMelahirkanService(
-        baseUrl: 'http://localhost:8080',
-      ),
+      EdukasiTandaMelahirkanService(),
     );
 
     futureData = repository.getAllEdukasiTandaMelahirkan();

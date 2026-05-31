@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ta_pa2_pa3_project/features/ibu/hamil/data/services/skrining_preeklampsia_api_service.dart';
 import 'package:ta_pa2_pa3_project/features/ibu/hamil/data/models/skrining_preeklampsia_model.dart';
-import 'package:ta_pa2_pa3_project/core/constants/app_colors.dart';
+import 'package:ta_pa2_pa3_project/core/themes/app_colors.dart';
 
 class SkriningPreeklampsiaScreen extends StatefulWidget {
   const SkriningPreeklampsiaScreen({super.key});

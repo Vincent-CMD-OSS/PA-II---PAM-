@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../data/models/edukasi_trimester_model.dart';
 import '../../data/repositories/edukasi_trimester_repository.dart';
 import '../../data/services/edukasi_trimester_service.dart';
+import 'package:ta_pa2_pa3_project/core/constants/api_constants.dart';
 
 class EdukasiTrimesterDetailScreen
     extends StatefulWidget {
@@ -33,9 +34,7 @@ class _EdukasiTrimesterDetailScreenState
 
     final repository =
         EdukasiTrimesterRepository(
-      EdukasiTrimesterService(
-        baseUrl: 'http://localhost:8080',
-      ),
+      EdukasiTrimesterService(),
     );
 
     futureData =

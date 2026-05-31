@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:ta_pa2_pa3_project/core/constants/app_colors.dart';
+import 'package:ta_pa2_pa3_project/core/themes/app_colors.dart';
 import '../../data/models/edukasi_trimester_model.dart';
 import '../../data/repositories/edukasi_trimester_repository.dart';
 import '../../data/services/edukasi_trimester_service.dart';
+import 'package:ta_pa2_pa3_project/core/constants/api_constants.dart';
 
 class EdukasiTrimesterKategoriScreen extends StatefulWidget {
   final String trimester;
@@ -32,9 +33,7 @@ class _EdukasiTrimesterKategoriScreenState
     
     // MENYAMBUNGKAN KE REPOSITORY DAN SERVICE ASLI (LOGIKA DATABASE 100% AMAN)
     final repository = EdukasiTrimesterRepository(
-      EdukasiTrimesterService(
-        baseUrl: 'http://localhost:8080',
-      ),
+      EdukasiTrimesterService(),
     );
 
     // Langsung mengambil seluruh data artikel trimester aktif

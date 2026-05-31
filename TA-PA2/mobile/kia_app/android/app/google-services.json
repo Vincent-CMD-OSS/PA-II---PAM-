@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "924050355138",
+    "project_id": "kia-cerdas",
+    "storage_bucket": "kia-cerdas.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:924050355138:android:ea5fc2d7bded9e48161c5b",
+        "android_client_info": {
+          "package_name": "com.example.ta_pa2_pa3_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfCrkjVRSDYLTYJFcne64aSjYWIo3Of28"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

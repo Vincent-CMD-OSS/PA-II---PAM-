@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ta_pa2_pa3_project/core/constants/app_colors.dart';
+import 'package:ta_pa2_pa3_project/core/themes/app_colors.dart';
 
 import '../ibu/konten_edukasi_ibu_screen.dart';
 import '../anak/konten_edukasi_anak_screen.dart';

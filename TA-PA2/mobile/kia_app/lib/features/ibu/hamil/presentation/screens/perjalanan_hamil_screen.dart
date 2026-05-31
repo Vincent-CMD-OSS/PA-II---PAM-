@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ta_pa2_pa3_project/core/themes/app_theme.dart';
 import 'package:ta_pa2_pa3_project/features/ibu/hamil/presentation/screens/trimester_menu_screen.dart';
 import 'package:ta_pa2_pa3_project/features/ibu/hamil/presentation/screens/hasil_evaluasi_kesehatan_screen.dart';
-import 'package:ta_pa2_pa3_project/core/constants/app_colors.dart';
+import 'package:ta_pa2_pa3_project/core/themes/app_colors.dart';
 
 class JourneyScreen extends StatefulWidget {
   final int currentWeek;

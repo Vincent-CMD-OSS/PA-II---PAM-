@@ -6,7 +6,7 @@
 // ============================================================
 
 import 'package:flutter/material.dart';
-import 'package:ta_pa2_pa3_project/core/constants/app_colors.dart';
+import 'package:ta_pa2_pa3_project/core/themes/app_colors.dart';
 
 class IbuGradientHeader extends StatelessWidget implements PreferredSizeWidget {
   final String title;

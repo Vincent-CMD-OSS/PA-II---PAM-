@@ -17,6 +17,8 @@ import 'package:ta_pa2_pa3_project/features/ibu/hamil/presentation/screens/catat
 import 'package:ta_pa2_pa3_project/features/ibu/hamil/presentation/screens/log_ttd_mms_screen.dart';
 import 'package:ta_pa2_pa3_project/features/ibu/nifas/presentation/screens/nifas_screen.dart';
 import 'package:ta_pa2_pa3_project/features/ibu/hamil/presentation/screens/persalinan_screen.dart';
+import 'package:ta_pa2_pa3_project/features/ibu/hamil/data/services/kehamilan_api_service.dart';
+import 'package:ta_pa2_pa3_project/features/ibu/hamil/presentation/screens/rujukan_list_screen.dart';
 // MODUL ANAK
 import 'package:ta_pa2_pa3_project/features/anak/anak/presentation/screens/anak/pilih_anak_screen.dart';
 import 'package:ta_pa2_pa3_project/features/anak/anak/presentation/screens/anak/input_profil_anak_screen.dart';
@@ -24,7 +26,7 @@ import 'package:ta_pa2_pa3_project/features/anak/edukasi/presentation/screens/ed
 import 'package:ta_pa2_pa3_project/features/ibu/hamil/presentation/screens/grafik_evaluasi_kehamilan_screen.dart';
 import 'package:ta_pa2_pa3_project/features/ibu/hamil/presentation/screens/grafik_peningkatan_bb_screen.dart';
 import 'package:ta_pa2_pa3_project/features/edukasi/presentation/screens/edukasi_screen_all.dart';
-import 'package:ta_pa2_pa3_project/core/constants/app_colors.dart';
+import 'package:ta_pa2_pa3_project/core/themes/app_colors.dart';
 import 'package:ta_pa2_pa3_project/core/services/auth_session.dart';
 import 'package:ta_pa2_pa3_project/features/ibu/nifas/presentation/screens/ringkasan_persalinan_screen.dart';
 import 'package:ta_pa2_pa3_project/features/ibu/nifas/presentation/screens/pelayanan_ibu_nifas_screen.dart';
@@ -59,11 +61,45 @@ class DashboardView extends StatefulWidget {
 class _DashboardViewState extends State<DashboardView> {
   int _selectedNavIndex = 0;
 
+  List<dynamic> _rujukanList = [];
+  bool _loadingRujukan = false;
+
+  final KehamilanApiService _kehamilanService = KehamilanApiService();
+
   // Helper formater yang tetap boleh tinggal di UI
   String _formatDate(DateTime? date) {
     if (date == null) return '-';
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'];
     return '${date.day} ${months[date.month - 1]} ${date.year}';
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _loadRujukan();
+  }
+
+  Future<void> _loadRujukan() async {
+    try {
+
+      final kehamilan =
+          await _kehamilanService
+              .getKehamilanAktif();
+
+      final data =
+          await _kehamilanService
+              .getRujukanByKehamilanId(
+                kehamilan.id,
+              );
+
+      if (!mounted) return;
+
+      setState(() {
+        _rujukanList = data;
+      });
+
+    } catch (_) {}
   }
 
   @override
@@ -204,12 +240,40 @@ class _DashboardViewState extends State<DashboardView> {
         const SizedBox(height: 16),
         DashboardMenuCard(title: 'Kehamilan Trimester 1–3', subtitle: 'Pantau perkembangan kehamilan', icon: Icons.favorite_outline, iconColor: Colors.pink, onTap: () => _openHamilJourney(state)),
         DashboardMenuCard(title: 'Persalinan', subtitle: 'Persiapan & proses persalinan', icon: Icons.child_care_outlined, iconColor: Colors.blue, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PersalinanScreen()))),
+        DashboardMenuCard(
+          title: 'Surat Rekomendasi Rujukan',
+
+          subtitle:
+              _rujukanList.isNotEmpty
+                  ? '${_rujukanList.length} surat rujukan tersedia'
+                  : 'Belum ada surat rekomendasi rujukan saat ini',
+
+          icon: Icons.description_outlined,
+
+          iconColor: AppColors.blue500,
+
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) =>
+                  const RujukanListScreen(),
+            ),
+          ),
+
+          isCompact: true,
+
+          backgroundColor:
+              AppColors.blue50,
+
+          borderColor:
+              AppColors.blue200,
+        ),
         const SizedBox(height: 32),
         const Text('MENU CEPAT', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey)),
         const SizedBox(height: 16),
         DashboardQuickMenu(
           crossAxisCount: 3,
-          childAspectRatio: 1.0,
+          childAspectRatio: 0.88,
           items: DashboardMenuData.hamilQuickMenuItems.map((item) {
             return {
               ...item,
@@ -229,44 +293,43 @@ class _DashboardViewState extends State<DashboardView> {
             };
           }).toList(),
         ),
-        const SizedBox(height: 32),
-        _buildDangerAlert(),
-        const SizedBox(height: 16),
+        const SizedBox(height: 20),
         
         // 🆕 TOMBOL DARURAT FASKES (TARUH DI SINI)
         GestureDetector(
-          onTap: () => Navigator.push(
-            context,
+        onTap: () => Navigator.push(
+
+          context,
             MaterialPageRoute(builder: (_) => const EmergencyFaskesScreen()),
-          ),
+        ),
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: const Color(0xFFFFEBEE),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: Colors.red.shade300),
-            ),
+          ),
             child: const Row(
-              children: [
+            children: [
                 Icon(Icons.local_hospital_rounded, color: Colors.red),
                 SizedBox(width: 12),
                 Expanded(
-                  child: Column(
+                child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                  children: [
                       Text('Cari RS/Klinik Terdekat (Darurat)',
                           style: TextStyle(fontSize: 12, color: Colors.red, fontWeight: FontWeight.bold)),
                       Text('Gunakan GPS untuk menemukan faskes terdekat saat keadaan darurat',
                           style: TextStyle(fontSize: 11, color: Colors.black54)),
-                    ],
-                  ),
+                  ],
                 ),
+              ),
                 Icon(Icons.chevron_right, color: Colors.red),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(height: 40),
+            ],
+    ),
+  ),
+),
+const SizedBox(height: 40),
       ],
     );
   }
@@ -294,11 +357,8 @@ class _DashboardViewState extends State<DashboardView> {
   Widget _buildNifasShortcut() {
     return Column(children: [
       DashboardMenuCard(title: 'Ringkasan Pelayanan Proses Melahirkan', subtitle: 'Lihat hasil pelayanan proses melahirkan', icon: Icons.child_friendly_rounded, iconColor: AppColors.primary, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => RingkasanPersalinanScreen(token: AuthSession.token ?? '')))),
-      const SizedBox(height: 16),
       DashboardMenuCard(title: 'Pemantauan Ibu Nifas', subtitle: 'Pantau masa nifas pasca persalinan', icon: Icons.person_outline, iconColor: AppColors.primary, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const NifasScreen()))),
-      const SizedBox(height: 16),
       DashboardMenuCard(title: 'Pelayanan Ibu Nifas', subtitle: 'Lihat catatan pelayanan ibu nifas', icon: Icons.medical_services_outlined, iconColor: AppColors.primary, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PelayananIbuNifasScreen()))),
-      const SizedBox(height: 16),
       DashboardMenuCard(title: 'Catatan Pelayanan Nifas', subtitle: 'Lihat catatan pemeriksaan dan saran nifas', icon: Icons.note_alt_outlined, iconColor: AppColors.primary, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CatatanPelayananNifasScreen()))),
     ]);
   }
@@ -389,18 +449,6 @@ class _DashboardViewState extends State<DashboardView> {
             ]),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildDangerAlert() {
-    return InkWell(
-      borderRadius: BorderRadius.circular(16),
-      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const RujukanListScreen())),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(color: const Color(0xFFEFF6FF), borderRadius: BorderRadius.circular(16), border: Border.all(color: Colors.blue.shade100)),
-        child: const Row(children: [Icon(Icons.description_outlined, color: Colors.blue), SizedBox(width: 12), Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('Surat Rekomendasi Rujukan', style: TextStyle(fontSize: 12, color: Colors.blue, fontWeight: FontWeight.bold)), Text('Belum ada surat rekomendasi rujukan saat ini', style: TextStyle(fontSize: 11, color: Colors.black54))])), Icon(Icons.chevron_right, color: Colors.blue)]),
       ),
     );
   }

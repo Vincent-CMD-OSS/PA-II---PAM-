@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../data/models/edukasi_imd_model.dart';
 import '../../data/repositories/edukasi_imd_repository.dart';
 import '../../data/services/edukasi_imd_service.dart';
+import 'package:ta_pa2_pa3_project/core/constants/api_constants.dart';
 
 class EdukasiIMDScreen extends StatefulWidget {
   const EdukasiIMDScreen({super.key});
@@ -19,9 +20,7 @@ class _EdukasiIMDScreenState extends State<EdukasiIMDScreen> {
     super.initState();
 
     final repository = EdukasiIMDRepository(
-      EdukasiIMDService(
-        baseUrl: 'http://localhost:8080',
-      ),
+      EdukasiIMDService(),
     );
 
     futureData = repository.getAllEdukasiIMD();

@@ -1,19 +1,17 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+import 'package:ta_pa2_pa3_project/core/constants/api_constants.dart';
+
 class EdukasiTrimesterService {
-  final String baseUrl;
-
-  EdukasiTrimesterService({
-    required this.baseUrl,
-  });
-
   Future<List<dynamic>> getByTrimester(
     String trimester,
   ) async {
     final response = await http.get(
       Uri.parse(
-        '$baseUrl/edukasi-trimester/$trimester',
+        ApiConstants.edukasiTrimester(
+          trimester,
+        ),
       ),
     );
 
@@ -32,7 +30,10 @@ class EdukasiTrimesterService {
   ) async {
     final response = await http.get(
       Uri.parse(
-        '$baseUrl/edukasi-trimester/$trimester/$kategori',
+        ApiConstants.edukasiTrimesterKategori(
+          trimester,
+          kategori,
+        ),
       ),
     );
 

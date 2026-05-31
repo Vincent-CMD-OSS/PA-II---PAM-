@@ -56,7 +56,7 @@ func (r *RujukanRepository) IsOwnedByUser(rujukanID int32, userID int32) (bool, 
 		Joins("JOIN ibu i ON i.id = k.ibu_id").
 		Joins("JOIN penduduk p ON p.id = i.penduduk_id").
 		Joins("JOIN pengguna u ON u.penduduk_id = p.id").
-		Where("rj.id = ? AND u.id = ?", rujukanID, userID).
+		Where("rujukan.id = ? AND u.id = ?", rujukanID, userID).
 		Count(&count).Error
 
 	return count > 0, err
