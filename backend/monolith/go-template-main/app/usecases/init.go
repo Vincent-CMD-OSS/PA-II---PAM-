@@ -81,6 +81,9 @@ type Main struct {
 	// AdminTenagaKesehatan *AdminTenagaKesehatanUsecase
 	// KeteranganLahir      KeteranganLahirUsecase // <-- TAMBAHKAN INI
 	// JenisPelayanan       JenisPelayananUsecase
+
+	// Profile Ibu
+	ProfilIbu ProfilIbuUsecase
 }
 
 type Options struct {
@@ -196,5 +199,13 @@ func Init(opts Options) *Main {
 	m.EdukasiNifas = NewEdukasiNifasUsecase(opts.Repository.EdukasiNifas)
 	m.EdukasiTandaMelahirkan = NewEdukasiTandaMelahirkanUsecase(opts.Repository.EdukasiTandaMelahirkan)
 	m.EdukasiTrimester = NewEdukasiTrimesterUseCase(opts.Repository.EdukasiTrimester,)
+	
+	// Profile Ibu
+	m.ProfilIbu = NewProfilIbuUsecase(
+        opts.Repository.User,
+        opts.Repository.Ibu,
+        opts.Repository.Kehamilan,
+    )
+	
 	return m
 }

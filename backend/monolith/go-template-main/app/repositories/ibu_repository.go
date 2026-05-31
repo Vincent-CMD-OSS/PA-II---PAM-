@@ -61,3 +61,16 @@ func (r *IbuRepository) Delete(id int32) error {
 	}
 	return nil
 }
+
+// Profile Ibu
+func (r *IbuRepository) FindByPendudukID(pendudukID int32) (*models.Ibu, error) {
+	var ibu models.Ibu
+	err := r.db.
+		Preload("Kependudukan").
+		Where("penduduk_id = ?", pendudukID).
+		First(&ibu).Error
+	if err != nil {
+		return nil, err
+	}
+	return &ibu, nil
+}

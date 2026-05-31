@@ -73,3 +73,14 @@ func (r *UserRepository) FindByKartuKeluargaID(kartuKeluargaID int64) (*models.U
 func (r *UserRepository) Update(user *models.User) error {
 	return r.db.Save(user).Error
 }
+
+
+// Profile Ibu
+func (r *UserRepository) FindByIDWithPenduduk(id int32) (*models.User, error) {
+	var user models.User
+	err := r.db.Preload("Role").First(&user, id).Error
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
