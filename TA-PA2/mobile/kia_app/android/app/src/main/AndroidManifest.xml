@@ -1,5 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- 1. WAJIB: Supaya APK bisa internetan & konek Backend -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <!-- Notification Permission -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
@@ -14,6 +17,11 @@
         android:label="ta_pa2_pa3_project"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+
+        <!-- 2. WAJIB: Channel ID untuk notifikasi background -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="kia_channel"/>
 
         <activity
             android:name=".MainActivity"

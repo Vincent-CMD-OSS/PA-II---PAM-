@@ -3,18 +3,20 @@ import 'package:flutter/foundation.dart';
 class ApiConstants {
   ApiConstants._();
 
-  static String get baseUrl {
-    if (kIsWeb) {
-      return 'http://localhost:8080';
-    }
+  // static String get baseUrl {
+  //   if (kIsWeb) {
+  //     return 'http://localhost:8080';
+  //   }
 
-    switch (defaultTargetPlatform) {
-      case TargetPlatform.android:
-        return 'http://10.0.2.2:8080';
-      default:
-        return 'http://127.0.0.1:8080';
-    }
-  }
+  //   switch (defaultTargetPlatform) {
+  //     case TargetPlatform.android:
+  //       return 'http://10.0.2.2:8080';
+  //     default:
+  //       return 'http://127.0.0.1:8080';
+  //   }
+  // }
+
+  static const String baseUrl = 'https://kiaapp-kia-backend.hf.space';
 
   // AUTH
   static const String authLogin = '/auth/login';
